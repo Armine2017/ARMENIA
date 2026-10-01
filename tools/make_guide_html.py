@@ -164,15 +164,15 @@ def convert(md_text, base_dir):
     return "\n".join(out)
 
 
-def main():
-    md = open(MD, encoding="utf-8").read()
-    body = convert(md, os.path.dirname(MD))
+def build(md_path, out_path, title):
+    md = open(md_path, encoding="utf-8").read()
+    body = convert(md, os.path.dirname(md_path))
     doc = f"""<!DOCTYPE html>
 <html lang="hy">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Տենդերների ավտոմատացում — քայլ առ քայլ</title>
+<title>{title}</title>
 <style>{CSS}</style>
 </head>
 <body>
@@ -183,8 +183,17 @@ def main():
 </body>
 </html>
 """
-    open(OUT, "w", encoding="utf-8").write(doc)
-    print("ok", os.path.relpath(OUT, BASE), f"({os.path.getsize(OUT) / 1024:.0f} KB)")
+    open(out_path, "w", encoding="utf-8").write(doc)
+    print("ok", os.path.relpath(out_path, BASE), f"({os.path.getsize(out_path) / 1024:.0f} KB)")
+
+
+def main():
+    build(MD, OUT, "Տենդերների ավտոմատացում — քայլ առ քայլ")
+    # 1) մեծ ուղեցույցը  2) ամենապարզը («ՍԿՍԻՐ ԱՅՍՏԵՂԻՑ»)
+    build(MD, OUT, "Տենդերների ավտոմատացում — քայլ առ քայլ")
+    build(os.path.join(BASE, "guide", "ՍԿՍԻՐ-ԱՅՍՏԵՂԻՑ.md"),
+          os.path.join(BASE, "guide", "ՍԿՍԻՐ-ԱՅՍՏԵՂԻՑ.html"),
+          "ՍԿՍԻՐ ԱՅՍՏԵՂԻՑ — 12 պարզ քայլ")
 
 
 if __name__ == "__main__":
