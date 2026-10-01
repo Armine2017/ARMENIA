@@ -27,13 +27,26 @@ Build me a turn-key "tender monitor" program that:
    - path of the saved file.
 4. After each run, produces a **daily summary** (how many new items, from which site, in which category), shows it on screen and saves it to a file.
 5. Never duplicates work: remembers already-downloaded announcements in a state file (`seen.json`).
+6. On the first run collects the full archive **from 1 October 2026 onwards** by walking the paginated lists
+   (`/1, /2, /3 …`) and stopping when a page contains only older items. Keep tenders whose deadline has not yet
+   passed even if published earlier.
+7. Writes a separate bids table (`bids.csv`) with: tender code, tender title, **participant**, tax ID/passport,
+   country, bid amount.
+8. Supports an **inbox/** folder: if I manually save a page as `.html` or download the "Download Excel" `.xlsx`,
+   the program parses those files exactly like the online pages (robust against JS rendering and layout changes).
 
 ## SOURCES (edit this list to my needs)
 
-1. `https://armeps.am/ppcm/public/tenders` — ARMEPS public tenders (Armenia)
-2. `https://gnumner.minfin.am/hy/page/norutyunner/` — RA Ministry of Finance announcements
-3. `https://procurement.minfin.am/hy/page/hraverum_katarvats_popokhutyunner/440` — changes / invitations
-4. <ADD MY OWN SITES HERE, one per line>
+1. `https://armeps.am/ppcm/public/bid-report` — PPCM "Bids": table of tenders (buyer, tender code, title,
+   publication date, bid deadline, status) plus a **bids table** (participant, tax ID/passport, country, bid amount).
+   The table is rendered by JavaScript — use headless Playwright or the "Download Excel" link. Dates are MM/DD/YYYY.
+2. `https://gnumner.minfin.am/hy/page/bac_mrcuyti_haytararutyun_ev_hraver/` — "Tender announcement and invitation":
+   each item links to `armeps.am/epps/cft/listContractDocuments.do?resourceId=…` and carries the text
+   "(Հրապարակված է 2026-10-01 13:30:00-ից մինչև 2026-11-01 11:00:00 …)" i.e. publication date + deadline + link.
+   Phones/e-mails must come from the announcement/document page. Pagination: `/1, /2, … /24`.
+3. `https://gnumner.minfin.am/hy/page/gnumneri_haytararutyunner_/` — main procurement announcements list.
+4. `https://procurement.minfin.am/hy/page/hraverum_katarvats_popokhutyunner/440` — changes / invitations.
+5. <ADD MY OWN SITES HERE, one per line>
 
 Rule for you: first check whether a site offers RSS, an API or a JSON endpoint and use that. Otherwise parse HTML with `requests` + `BeautifulSoup`. If content is rendered by JavaScript, use Playwright in headless mode. Record the chosen method per site in the config file and explain it to me in one sentence.
 

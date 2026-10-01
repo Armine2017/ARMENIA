@@ -1,27 +1,24 @@
 {
+  "since_date": "2026-10-01",
   "run_time": "08:00",
   "delay_seconds": 2,
   "fetch_detail_pages": true,
   "only_keywords": [],
-  "sources": [
-    {
-      "name": "ARMEPS",
-      "url": "https://armeps.am/ppcm/public/tenders",
-      "kind": "html"
-    },
-    {
-      "name": "MinFin",
-      "url": "https://gnumner.minfin.am/hy/page/norutyunner/",
-      "kind": "html"
-    }
-  ],
+  "max_pages": 25,
+  "inbox_folder": "inbox",
   "categories": {
     "Շինարարություն": [
       "շին",
       "կառուց",
-      "վերանորոգ",
+      "նորոգ",
+      "ասֆալտ",
       "շենք",
-      "construction"
+      "կամուրջ",
+      "ջրագիծ",
+      "պուրակ",
+      "զբոսայգի",
+      "տանիք",
+      "քանդ"
     ],
     "ՏՏ և ծրագրակազմ": [
       "համակարգչ",
@@ -29,9 +26,7 @@
       "սերվեր",
       "տեղեկատվական",
       "ինտերնետ",
-      "ցանց",
-      "software",
-      "server"
+      "ցանց"
     ],
     "Բժշկական": [
       "բժշկ",
@@ -44,16 +39,54 @@
     "Տրանսպորտ": [
       "տրանսպորտ",
       "մեքենա",
+      "ավտոմեքենա",
       "ճանապարհ",
       "վառելիք",
-      "ավտոբուս"
+      "ավտոբուս",
+      "բենզին",
+      "շարժասանդուղք",
+      "վերելակ",
+      "մետրո"
     ],
     "Ծառայություններ": [
       "ծառայություն",
       "սպասարկում",
+      "հսկող",
       "խորհրդատվ",
       "մաքր"
     ],
+    "Ապրանքներ": [
+      "մատակարարում",
+      "ձեռքբերում",
+      "գնում",
+      "ապրանք",
+      "սարքավորում",
+      "գույք"
+    ],
     "Այլ": []
-  }
+  },
+  "sources": [
+    {
+      "name": "ARMEPS-Հայտեր",
+      "url": "https://armeps.am/ppcm/public/bid-report",
+      "kind": "js",
+      "page_pattern": "https://armeps.am/ppcm/public/bid-report?page={n}",
+      "parse": "table",
+      "date_order": "MDY"
+    },
+    {
+      "name": "MinFin-Մրցույթի-հայտարարություն",
+      "url": "https://gnumner.minfin.am/hy/page/bac_mrcuyti_haytararutyun_ev_hraver/",
+      "kind": "html",
+      "page_pattern": "https://gnumner.minfin.am/hy/page/bac_mrcuyti_haytararutyun_ev_hraver/{n}",
+      "parse": "tender-ad"
+    },
+    {
+      "name": "MinFin-Հայտարարություններ",
+      "url": "https://gnumner.minfin.am/hy/page/gnumneri_haytararutyunner_/",
+      "kind": "html",
+      "page_pattern": "https://gnumner.minfin.am/hy/page/gnumneri_haytararutyunner_/{n}",
+      "parse": "tender-ad"
+    }
+  ]
 }
