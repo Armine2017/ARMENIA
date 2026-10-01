@@ -1,0 +1,7 @@
+# Բոտի աշխատանքի ընթացքում ստեղծվող ֆայլեր (չեն պահվում պահոցում)
+bot/data/
+bot/reports/
+bot/logs/
+bot/seen.json
+__pycache__/
+*.pyc
