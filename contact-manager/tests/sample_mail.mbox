@@ -1,0 +1,37 @@
+From alice@example.com Mon Mar 11 09:00:00 2024
+Date: Mon, 11 Mar 2024 09:00:00 +0400
+From: "Alice Example" <alice@example.com>
+To: "Bob Example" <bob@example.com>, carol@test.invalid
+Cc: noreply@shop.example.com
+Subject: Սինթետիկ թեստ 1
+Message-ID: <sample-1@example.com>
+
+Սա սինթետիկ փորձնական նամակ է՝ միայն սցենարը փորձարկելու համար։
+Իմ համարը՝ +374 91 000 111։
+
+From bob@example.com Tue Sep 02 18:30:00 2025
+Date: Tue, 02 Sep 2025 18:30:00 +0400
+From: "Bob Example" <bob@example.com>
+To: "Alice Example" <alice@example.com>, "Alice Example" <alice+work@example.com>
+Subject: Սինթետիկ թեստ 2
+Message-ID: <sample-2@example.com>
+
+Բարև, զանգիր ինձ՝ 091 00 02 02 կամ +7 900 000 00 03։
+
+From no-reply@notify.example.com Wed Sep 10 11:00:00 2025
+Date: Wed, 10 Sep 2025 11:00:00 +0400
+From: "Example Notify" <no-reply@notify.example.com>
+To: alice@example.com
+Subject: Սինթետիկ թեստ 3
+Message-ID: <sample-3@example.com>
+
+Ավտոմատ ծանուցում է։ Մի՛ պատասխանիր այս նամակին։
+
+From carol@test.invalid Thu Sep 25 08:15:00 2025
+Date: Thu, 25 Sep 2025 08:15:00 +0400
+From: "Carol Test" <carol@test.invalid>
+To: "Alice Example" <alice@example.com>
+Subject: Սինթետիկ թեստ 4
+Message-ID: <sample-4@example.com>
+
+Ողջույն։ Սա նաև carol@test.invalid հասցեից է (կրկնություն՝ ստուգելու համար)։
