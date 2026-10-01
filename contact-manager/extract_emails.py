@@ -823,72 +823,90 @@ def services_path_for(out_path: Path) -> Path:
 
 
 def console_summary(collector: Collector, people: list[dict], services: list[dict], args,
-                    out_path: Path, services_path: Path | None) -> None:
+                    out_path: Path, services_path: Path | None) -> str:
+    """Կառուցում է ամփոփման տեքստը (հասցեները դիմակավորված), տպում ու վերադարձնում այն։"""
     show = args.show_emails
-    print("")
-    print("=" * 62)
-    print("ԱՄՓՈՓՈՒՄ (հասցեները դիմակավորված են)" if not show else "ԱՄՓՈՓՈՒՄ")
-    print("=" * 62)
+    lines: list[str] = []
+    lines.append("")
+    lines.append("=" * 62)
+    lines.append("ԱՄՓՈՓՈՒՄ (հասցեները դիմակավորված են)" if not show else "ԱՄՓՈՓՈՒՄ")
+    lines.append("=" * 62)
     if collector.messages:
-        print(f"Մշակված նամակ/տեքստային ֆայլ՝ {collector.messages}")
-    print(f"Մշակված CSV՝ {collector.files}")
-    print(f"Մարդկանց գրառում՝ {len(people)}")
+        lines.append(f"Մշակված նամակ/տեքստային ֆայլ՝ {collector.messages}")
+    lines.append(f"Մշակված CSV՝ {collector.files}")
+    lines.append(f"Մարդկանց գրառում՝ {len(people)}")
     if services:
-        print(f"Ծառայությունների/ծանուցումների գրառում՝ {len(services)} → {services_path}")
-    print(f"Առանց էլ. փոստի գրառում՝ {sum(1 for r in people if not r['Էլ. փոստ'])}")
-    print(f"Կարդալու սխալ՝ {collector.errors}")
-    print(f"Արդյունքային ֆայլ՝ {out_path} (իրավունքներ՝ 600)")
+        lines.append(f"Ծառայությունների/ծանուցումների գրառում՝ {len(services)} → {services_path}")
+    lines.append(f"Առանց էլ. փոստի գրառում՝ {sum(1 for r in people if not r['Էլ. փոստ'])}")
+    lines.append(f"Կարդալու սխալ՝ {collector.errors}")
+    lines.append(f"Արդյունքային ֆայլ՝ {out_path} (իրավունքներ՝ 600)")
 
     def counts(rows, key):
         return Counter(r[key] for r in rows)
 
     if people:
-        print("")
-        print("Հիմնական ֆայլի գրառումները՝ ըստ կատեգորիայի (առաջարկ).")
+        lines.append("")
+        lines.append("Հիմնական ֆայլի գրառումները՝ ըստ կատեգորիայի (առաջարկ).")
         for cat, cnt in sorted(counts(people, "Կատեգորիա").items(), key=lambda t: CATEGORY_ORDER.get(t[0], 99)):
-            print(f"  • {cat}: {cnt}")
-        print("")
-        print("Գրառումները՝ ըստ կարգավիճակի.")
+            lines.append(f"  • {cat}: {cnt}")
+        lines.append("")
+        lines.append("Գրառումները՝ ըստ կարգավիճակի.")
         for st, cnt in sorted(counts(people, "Կարգավիճակ").items()):
-            print(f"  • {st}: {cnt}")
+            lines.append(f"  • {st}: {cnt}")
         domains = Counter(r["Դոմեն"] for r in people if r["Դոմեն"])
         if domains:
-            print("")
-            print("Լավագույն դոմեններ.")
+            lines.append("")
+            lines.append("Լավագույն դոմեններ.")
             for dom, cnt in domains.most_common(10):
-                print(f"  • {dom}: {cnt}")
+                lines.append(f"  • {dom}: {cnt}")
 
     duplicates = [r for r in people + services if "արդեն բազայում" in r["Պիտակներ"]]
     if duplicates:
-        print("")
-        print(f"⚠ Արդեն բազայում հնարավոր կրկնվող՝ {len(duplicates)} (միավորում ՉԻ կատարվել)")
+        lines.append("")
+        lines.append(f"⚠ Արդեն բազայում հնարավոր կրկնվող՝ {len(duplicates)} (միավորում ՉԻ կատարվել)")
+    csv_dupes = [r for r in people + services if "ցանկում կրկնվող" in r["Պիտակներ"]]
+    if csv_dupes:
+        lines.append("")
+        lines.append(f"⚠ Աղբյուրի ցանկում կրկնվող հասցեներ՝ {len(csv_dupes)} (միավորում ՉԻ ԿԱՏԱՐՎԵԼ)")
+    extra_rows = [r for r in people + services if "լրացուցիչ հասցե" in r["Պիտակներ"]]
+    if extra_rows:
+        lines.append("")
+        lines.append(f"ℹ Նույն գրառումից լրացուցիչ էլ. հասցեներ՝ {len(extra_rows)} (առանձին տողերով)")
+    need_check = [r for r in people + services if r["Կարգավիճակ"] == "Ստուգման ենթակա"]
+    if need_check:
+        lines.append("")
+        lines.append(f"ℹ Ստուգման ենթակա գրառումներ՝ {len(need_check)} (նշվա՞ծ են Նշումներ սյունակում)")
     plus_dupes = {base: keys for base, keys in collector.plus_groups.items() if len(keys) > 1}
     if plus_dupes:
-        print("")
-        print(f"⚠ Նույն հասցեի +tag տարբերակներ՝ {len(plus_dupes)} խումբ (միավորում ՉԻ ԿԱՏԱՐՎԵԼ)՝")
+        lines.append("")
+        lines.append(f"⚠ Նույն հասցեի +tag տարբերակներ՝ {len(plus_dupes)} խումբ (միավորում ՉԻ ԿԱՏԱՐՎԵԼ)՝")
         for base, keys in list(plus_dupes.items())[:5]:
-            print("   " + ", ".join(mask_email(k, show) for k in sorted(keys)))
+            lines.append("   " + ", ".join(mask_email(k, show) for k in sorted(keys)))
 
     self_candidates = [
         k for k, _ in collector.to_cc_counts.most_common(5)
         if collector.to_cc_counts[k] >= SELF_CANDIDATE_MIN and not collector.from_counts.get(k)
     ]
     if self_candidates:
-        print("")
-        print("Հնարավոր է քո սեփական հասցեն (միայն To/Cc-ում է հանդիպում)՝")
+        lines.append("")
+        lines.append("Հնարավոր է քո սեփական հասցեն (միայն To/Cc-ում է հանդիպում)՝")
         for k in self_candidates:
-            print(f"   • {mask_email(k, show)} — բաց թողնելու համար՝ --me {mask_email(k, show)}")
+            lines.append(f"   • {mask_email(k, show)} — բաց թողնելու համար՝ --me {mask_email(k, show)}")
 
     preview = people[:10] if not show else people[:20]
     if preview:
-        print("")
-        print("Առաջին տողերը (դիմակավորված).")
+        lines.append("")
+        lines.append("Առաջին տողերը (դիմակավորված).")
         for row in preview:
             name = " ".join(p for p in (row["Անուն"], row["Ազգանուն"]) if p) or "—"
             contact = row["Էլ. փոստ"] or row["Հիմնական հեռախոս"] or "—"
-            print(f"  • {name} | {contact} | {row['Կատեգորիա']} | {row['Կարգավիճակ']}")
-    print("")
-    print("Հիշեցում՝ աղբյուր ֆայլերը չեն փոփոխվել, ոչինչ չի ուղարկվել, ոչ մի գրառում միավորված չէ։")
+            lines.append(f"  • {name} | {contact} | {row['Կատեգորիա']} | {row['Կարգավիճակ']}")
+    lines.append("")
+    lines.append("Հիշեցում՝ աղբյուր ֆայլերը չեն փոփոխվել, ոչինչ չի ուղարկվել, ոչ մի գրառում միավորված չէ։")
+
+    text = "\n".join(lines)
+    print(text)
+    return text
 
 
 # ---------------------------------------------------------------- CLI
@@ -910,6 +928,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--no-split-names", action="store_true", help="Անուն/ազգանուն չեն բաժանվում (միայն Header-ի ձևաչափի համար)")
     p.add_argument("--mask-file", action="store_true", help="Ֆայլում էլ. հասցեները դիմակավորել (եթե ֆայլը կիսում ես)")
     p.add_argument("--show-emails", action="store_true", help="Տերմինալում ցույց տալ ամբողջական հասցեները")
+    p.add_argument("--summary-out", help="Դիմակավորված ամփոփումը գրել այս ֆայլում (կիսելու համար անվտանգ)")
     p.add_argument("--max-messages", type=int, default=0, help="Սահմանափակել նամակների քանակը (թեստի համար)")
     return p
 
@@ -959,7 +978,16 @@ def main(argv=None) -> int:
         services_path = Path(args.services_out) if args.services_out else services_path_for(out_path)
         write_file(services, services_path)
 
-    console_summary(collector, people, services, args, out_path, services_path)
+    text = console_summary(collector, people, services, args, out_path, services_path)
+    if args.summary_out:
+        summary_path = Path(args.summary_out)
+        summary_path.parent.mkdir(parents=True, exist_ok=True)
+        summary_path.write_text(text, encoding="utf-8")
+        try:
+            os.chmod(summary_path, 0o600)
+        except OSError:
+            pass
+        print(f"\nԴիմակավորված ամփոփումը գրված է՝ {summary_path} (բոլոր հասցեները դիմակավորված են)։")
     return 0
 
 
