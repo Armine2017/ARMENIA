@@ -1,0 +1,7 @@
+Name,Given Name,Additional Name,Family Name,Nickname,Birthday,Notes,Group Membership,E-mail 1 - Value,E-mail 2 - Value,Phone 1 - Value,Phone 2 - Value,Organization 1 - Name,Organization 1 - Title,Address 1 - City
+Maria Sample,Maria,,Sample,,1990-05-12,"Սինթետիկ թեստ է. իրական մարդ չէ։",myContacts ::: Family ::: Ընտանիք,maria.sample@example.com,maria.sample+work@example.com,+374 91 111 111,091 11 11 12,,,Երևան
+Peter Sample,Peter,,Sample,Պետյա,--03-04,,myContacts ::: Work,petr.sample@example.ru,,8 900 111 22 33,,Example LLC,Manager,Մոսկվա
+Anna Sample,Anna,,Sample,,1985-11-30,,myContacts ::: Work,anna.sample@company.example.com,+374 55 222 333,,,Company X,Director,Գյումրի
+Grigor Sample,Գրիգոր,,Sample,,1980-01-15,Միայն հեռախոս է եղել,myContacts,,,093 33 33 33,,,,,Վանաձոր
+,,,,,,,,orphan.sample@example.am,,,,,,
+,,,,,,,,support@shop.example.com,,,,-,,,

@@ -1,7 +1,8 @@
 __pycache__/
 
 # Փոստարկղի իրական արտահանումները և ցանկացած իրական տվյալ Git-ում ՉԵՆ պահվում
-inbox/
+inbox/*
+!inbox/README.txt
 *.mbox
 *.mbx
 *.eml
